@@ -19,9 +19,11 @@ public:
 	virtual ~UserList();
 	User* login();
 	User* getUser(std::string);
+	User* getUser(int index);
 	void addUser(std::string, std::string);
 	void saveUsers();
 	void loadUsers();
+	int countUsers();
 private:
 	std::vector<User*> users;
 };

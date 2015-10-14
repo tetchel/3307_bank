@@ -37,9 +37,6 @@ User::User(std::string usern, std::string passw, int chq, int sav) {
     //balances are in cents
     chq_bal = chq;
     sav_bal = sav;
-    //balanced-changed flags
-//    chq_changed = false;
-//    sav_changed = false;
 }
 
 User::~User() {
@@ -50,19 +47,14 @@ void User::modifyBalance(bool isChq, int amount) {
 	std::ostringstream oss;
 	oss <<"Modifying balance of " << getUsername() << (isChq ? " chequing" : " savings") << " by " << amount;
 	Admin::logExecutionTrace(oss.str());
-	if(isChq) {
+	if(isChq)
 		chq_bal += amount;
-//		chq_changed = true;
-	}
-	else {
+	else
 		sav_bal += amount;
-//		sav_changed = true;
-	}
 }
 
 std::ostream & operator<<(std::ostream &os, const User &u)
 {
-//    return os << ' ' << u.getId() << ' ' << u.getUsername() << ' ' << u.getChequing() << ' ' << u.getSavings();
 	return os << u;
 }
 

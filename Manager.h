@@ -15,6 +15,7 @@ class Manager {
 public:
 	static void managerOperations(UserList*);
 private:
+    static void outputUserInfo(User*);
 };
 
 #endif /* MANAGER_H_ */

@@ -2,7 +2,7 @@
 
 #define NUM_OPTIONS 5
 
-void Manager::managerOperations(UserList* userlist) {
+void Manager::managerOperations(UserList* userList) {
 	std::vector<std::string> actions;
 	actions.push_back("View data for a user");
 	actions.push_back("View data for all users");
@@ -23,26 +23,41 @@ void Manager::managerOperations(UserList* userlist) {
 					std::cin >> username;
 					transform(username.begin(), username.end(), username.begin(), ::tolower);
 
-					User* user = userlist->getUser(username);
-					if(user != NULL) {
-						std::cout 	<< "Data for " << username << ", ID " << user->getId() << ": " << std::endl
-									<< "Chequing Balance: " << user->getChequing() << std::endl
-									<< "Savings Balance: " << user->getSavings()  << std::endl;
-						enterUserAgain = false;
-					}
-					else {
-						std::cout << "Username was not found in the system." << std::endl;
-						enterUserAgain = IOUtils::getUserResponse("Try a new username?", 'y', 'n');
-					}
+                    if(userList->getUser(username) != NULL) {
+                        outputUserInfo(userList->getUser(username));
+                        enterUserAgain = false;
+                    }
+                    else {
+                        std::cout << "Username was not found in the system." << std::endl;
+                        enterUserAgain = IOUtils::getUserResponse("Try a new username?", 'y', 'n');
+                    }
 				}
 				break;
 			}
 			case 2: {
-
+                int i;
+                //start at 2 - 0 and 1 are the superusers, who don't have any money.
+                for (i = 2; i < userList->countUsers(); i++) {
+                    outputUserInfo(userList->getUser(i));
+                }
 				break;
 			}
 			case 3: {
+                int chq_sum = 0,
+                    sav_sum = 0,
+                    i = 0;
 
+                for (i = 2; i < userList->countUsers(); i++) {
+                    int chq = userList->getUser(i)->getChequing(),
+                        sav = userList->getUser(i)->getSavings();
+                    if(chq != -1)
+                        chq_sum += chq;
+                    if(sav != -1)
+                        sav_sum += sav;
+                }
+                std::cout   << "Total Funds: "    << IOUtils::centsToString(chq_sum + sav_sum)  << std::endl
+                            << "Chequing Funds: " << IOUtils::centsToString(chq_sum)            << std::endl
+                            << "Savings Funds: "  << IOUtils::centsToString(sav_sum)            << std::endl;
 				break;
 			}
 			case 4: {
@@ -54,9 +69,26 @@ void Manager::managerOperations(UserList* userlist) {
 				std::cout << "Enter the password: ";
 				std::string password;
 				std::cin >> password;
-				userlist->addUser(username, password);
+				userList->addUser(username, password);
 				std::cout << "User " << username << " created with password " << password << std::endl;
 			}
 		}
 	}
+}
+
+//outputs formatted info for the parameter user.
+//returns whether or not the user exists.
+void Manager::outputUserInfo(User* user) {
+    std::cout 	<< "Data for " << user->getUsername() << ", ID " << user->getId() << ": " << std::endl;
+    int chq = user->getChequing();
+    int sav = user->getSavings();
+
+    if(chq != -1)
+        std::cout << "Chequing Balance: " << IOUtils::centsToString(chq) << std::endl;
+    else
+        std::cout << "No chequing account." << std::endl;
+    if(sav != -1)
+        std::cout << "Savings Balance: " << IOUtils::centsToString(sav)  << std::endl;
+    else
+        std::cout << "No savings account." << std::endl;
 }

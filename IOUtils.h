@@ -12,6 +12,7 @@ class IOUtils {
 public:
     static bool getUserResponse(std::string, const char, const char);
     static int getUserAction(std::vector<std::string>*);
+    static std::string centsToString(int amount);
 };
 
 #endif /* IOUTILS_H_ */

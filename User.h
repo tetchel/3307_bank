@@ -32,6 +32,7 @@ class User
         int id;
         int chq_bal;
         int sav_bal;
+        //code required to serialize User
     	friend class boost::serialization::access;
     	template<class Archive>
     	void serialize(Archive & ar, const unsigned int version) {

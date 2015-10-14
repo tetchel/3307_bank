@@ -25,7 +25,10 @@ UserList::UserList() {
 }
 
 UserList::~UserList() {
-	//free(&users);
+	for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
+        delete *it;
+
+    users.clear();
 }
 
 void UserList::saveUsers() {
@@ -59,7 +62,8 @@ User* UserList::login() {
 		}
 
 		if((currentUser = getUser(username)) != NULL) {
-			while(!logged_in) {
+            int attempts = 0;
+			while(!logged_in && attempts++ < 5) {
 				std::cout << "Password: ";
 				std::string password;
 				std::cin >> password;
@@ -73,6 +77,9 @@ User* UserList::login() {
 					Admin::logExecutionTrace("Failed login by " + username);
 				}
 			}
+			if(attempts >= 5) {
+                std::cout << "Maximum number of attempts exceeded." << std::endl;
+			}
 		}
 		else {
 			std::cout 	<< "Username not found, please re-enter or type \"exit\" to leave the application." << std::endl
@@ -85,6 +92,14 @@ User* UserList::login() {
 
 void UserList::addUser(std::string username, std::string password) {
 	users.push_back(new User(username, password, -1, -1));
+}
+
+int UserList::countUsers() {
+    return users.size();
+}
+
+User* UserList::getUser(int index) {
+    return users.at(index);
 }
 
 User* UserList::getUser(std::string username) {

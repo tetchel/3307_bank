@@ -199,9 +199,9 @@ void StandardUser::printBalances(User* user) {
 	std::cout << "Your current balances:" << std::endl;
 
 	if(chq != -1)
-		std::cout << "Chequing Balance: " << centsToString(chq) << std::endl;
+		std::cout << "Chequing Balance: " << IOUtils::centsToString(chq) << std::endl;
 	if(sav != -1)
-		std::cout << "Savings Balance:  " << centsToString(sav) << std::endl;
+		std::cout << "Savings Balance:  " << IOUtils::centsToString(sav) << std::endl;
 }
 
 int StandardUser::getDollarAmount() {
@@ -221,7 +221,7 @@ int StandardUser::getDollarAmount() {
 
 int StandardUser::processDeduction(User* user, bool chq) {
 	int balance = chq ? user->getChequing() : user->getSavings();
-	std::cout << centsToString(balance) << " is available." << std::endl;
+	std::cout << IOUtils::centsToString(balance) << " is available." << std::endl;
 	int amount = getDollarAmount();
 	//MIN_BALANCE doesn't matter for savings accounts
 	if(balance - amount > MIN_BALANCE || (balance - amount > 0 && !chq)) {
@@ -229,8 +229,8 @@ int StandardUser::processDeduction(User* user, bool chq) {
 	}
 	else if (balance - amount < 0) {
 		std::cout 	<< "Insufficient funds!" << std::endl
-					<< "Current balance is " << centsToString(balance) << " and you entered " << centsToString(amount) << std::endl
-					<< "You are short " << centsToString(amount-balance) << "." << std::endl;
+					<< "Current balance is " << IOUtils::centsToString(balance) << " and you entered " << IOUtils::centsToString(amount) << std::endl
+					<< "You are short " << IOUtils::centsToString(amount-balance) << "." << std::endl;
 		bool again = IOUtils::getUserResponse("Enter a smaller amount?", 'y', 'n');
 		if(again) {
 			return processDeduction(user, chq);
@@ -256,18 +256,4 @@ int StandardUser::processDeduction(User* user, bool chq) {
 		else
 			return 0;
 	}
-}
-
-std::string StandardUser::centsToString(int amount) {
-	std::ostringstream oss;
-	oss << "$" << amount/100 << ".";
-	int cents = amount%100;
-	if(cents > 9)
-		oss << cents;
-	else if(cents > 0)
-		oss << "0" << cents;
-	else
-		oss << "00";
-
-	return oss.str();
 }

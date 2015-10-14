@@ -45,3 +45,17 @@ bool IOUtils::getUserResponse(std::string msg, const char option1, const char op
 	//never executed
 	return true;
 }
+
+std::string IOUtils::centsToString(int amount) {
+	std::ostringstream oss;
+	oss << "$" << amount/100 << ".";
+	int cents = amount%100;
+	if(cents > 9)
+		oss << cents;
+	else if(cents > 0)
+		oss << "0" << cents;
+	else
+		oss << "00";
+
+	return oss.str();
+}
