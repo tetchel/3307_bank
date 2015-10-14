@@ -22,10 +22,11 @@ public:
 	User* getUser(int index);
 	void addUser(std::string, std::string);
 	void saveUsers();
-	void loadUsers();
 	int countUsers();
 private:
 	std::vector<User*> users;
+	static int next_id;
+	void loadUsers();
 };
 
 #endif /* USERLIST_H_ */

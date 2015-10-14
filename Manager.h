@@ -5,7 +5,6 @@
 #include "UserList.h"
 #include "IOUtils.h"
 
-
 #include <iostream>
 #include <vector>
 #include <string>

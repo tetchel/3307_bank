@@ -2,11 +2,18 @@
 
 #define SERIAL_NAME "users.ser"
 
+/**
+*   This is a data type class which holds the vector containing pointers to all users.
+*   This vector is serialized after any relevant operation is performed using saveUsers(), and loads the data in the constructor.
+*   Implements some vector operations so that the vector itself is hidden from other classes.
+**/
+
+//main feature of this class; the data
 std::vector<User*> users;
 
 UserList::UserList() {
-    //list of users
-    users.reserve(User::getMaxUsers()*sizeof(User*));
+    //list of users - size of 1000 is plenty.
+    users.reserve(1000*sizeof(User*));
     //see if there is saved data
     if(access(SERIAL_NAME, F_OK ) != -1) {
         //if so, load it
@@ -15,15 +22,16 @@ UserList::UserList() {
     //if not, create some sample data so the system is usable.
     else {
         std::cout << "No saved user data found. Creating superusers and a sample regular user with usernames 'manager', 'admin', and 'jsmith'. Passwords match lowercase usernames." << std::endl;
-       //precreate superusers
+        //create superusers
         users.push_back(new User("Manager", "manager", -1, -1));
-        //admin knows better, so he has a secure password
         users.push_back(new User("Admin", "admin", -1, -1));
         //create a demo user
         users.push_back(new User("jsmith", "jsmith", 500000, 200000));
+        saveUsers();
     }
 }
 
+//free memory held by vector pointers
 UserList::~UserList() {
 	for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
         delete *it;
@@ -31,18 +39,22 @@ UserList::~UserList() {
     users.clear();
 }
 
+//serializes the vector to file
 void UserList::saveUsers() {
     std::ofstream ofs(SERIAL_NAME);
     boost::archive::text_oarchive oa(ofs);
     oa << users;
 }
 
+//loads serialized data into vector
 void UserList::loadUsers() {
 	std::ifstream ifs(SERIAL_NAME);
     boost::archive::text_iarchive ia(ifs);
     ia >> users;
 }
 
+//handles a user logging in
+//returns a pointer to the user who is logged in
 User* UserList::login() {
 	bool logged_in = false;
 	User* currentUser;
@@ -61,6 +73,7 @@ User* UserList::login() {
 			return NULL;
 		}
 
+        //if the user exists, prompt for a password
 		if((currentUser = getUser(username)) != NULL) {
             int attempts = 0;
 			while(!logged_in && attempts++ < 5) {
@@ -90,23 +103,28 @@ User* UserList::login() {
 	return currentUser;
 }
 
+//add a user with the specified info to the system
 void UserList::addUser(std::string username, std::string password) {
 	users.push_back(new User(username, password, -1, -1));
 }
 
+//how many users are in the list
 int UserList::countUsers() {
     return users.size();
 }
 
+//returns the user at index i - useful for looping through all users
 User* UserList::getUser(int index) {
     return users.at(index);
 }
 
+//returns the user* to the user with the given username
 User* UserList::getUser(std::string username) {
 	for(std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it) {
 		if((*it)->getUsername().compare(username) == 0) {
 			return *it;
 		}
 	}
+	//user was not found :(
 	return NULL;
 }

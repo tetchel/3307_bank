@@ -2,6 +2,10 @@
 
 #define NUM_OPTIONS 5
 
+/**
+*   This class handles all operations performed by the Bank Manager.
+*   Includes viewing user details, adding a user, or viewing bank funds.
+**/
 void Manager::managerOperations(UserList* userList) {
 	std::vector<std::string> actions;
 	actions.push_back("View data for a user");
@@ -15,8 +19,10 @@ void Manager::managerOperations(UserList* userList) {
 		input = IOUtils::getUserAction(&actions);
 
 		switch(input) {
+		    //view data 1 user
 			case 1: {
 				bool enterUserAgain = true;
+				//wait for a real username
 				while(enterUserAgain) {
 					std::cout << "Enter the username: ";
 					std::string username;
@@ -34,19 +40,21 @@ void Manager::managerOperations(UserList* userList) {
 				}
 				break;
 			}
+			//view info for all users
 			case 2: {
                 int i;
-                //start at 2 - 0 and 1 are the superusers, who don't have any money.
+                //start at 2 because 0 and 1 are the superusers, who don't have any money.
                 for (i = 2; i < userList->countUsers(); i++) {
                     outputUserInfo(userList->getUser(i));
                 }
 				break;
 			}
+			//view total bank funds
 			case 3: {
                 int chq_sum = 0,
                     sav_sum = 0,
                     i = 0;
-
+                //loop through users, keep a running total of their cash
                 for (i = 2; i < userList->countUsers(); i++) {
                     int chq = userList->getUser(i)->getChequing(),
                         sav = userList->getUser(i)->getSavings();
@@ -60,17 +68,29 @@ void Manager::managerOperations(UserList* userList) {
                             << "Savings Funds: "  << IOUtils::centsToString(sav_sum)            << std::endl;
 				break;
 			}
+			//add a user
 			case 4: {
-                std::cout << "Enter the username to create: ";
-				std::string username;
-				std::cin >> username;
-				transform(username.begin(), username.end(), username.begin(), ::tolower);
+			    bool again = true;
+			    while(again) {
+                    std::cout << "Enter the username to create: ";
+                    std::string username;
+                    std::cin >> username;
+                    transform(username.begin(), username.end(), username.begin(), ::tolower);
 
-				std::cout << "Enter the password: ";
-				std::string password;
-				std::cin >> password;
-				userList->addUser(username, password);
-				std::cout << "User " << username << " created with password " << password << std::endl;
+                    if(userList->getUser(username) != NULL) {
+                        std::cout << "User " << username << " already exists." << std::endl;
+                    }
+                    else {
+                        std::cout << "Enter the password: ";
+                        std::string password;
+                        std::cin >> password;
+                        userList->addUser(username, password);
+                        std::cout << "User " << username << " created with password " << password << std::endl;
+                        //save the new user into the .ser
+                        userList->saveUsers();
+                        again = false;
+                    }
+                }
 			}
 		}
 	}
@@ -79,7 +99,7 @@ void Manager::managerOperations(UserList* userList) {
 //outputs formatted info for the parameter user.
 //returns whether or not the user exists.
 void Manager::outputUserInfo(User* user) {
-    std::cout 	<< "Data for " << user->getUsername() << ", ID " << user->getId() << ": " << std::endl;
+    std::cout 	<< "Data for " << user->getUsername() << ": " << std::endl;
     int chq = user->getChequing();
     int sav = user->getSavings();
 

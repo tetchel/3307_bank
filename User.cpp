@@ -1,37 +1,21 @@
 #include "User.h"
 
-#define MAX_USERS 1000
+/**
+*   This class is a data type to hold user information, including username, password, account balances, and a unique ID.
+*   Also implements some functions to make this class serializable, and consequently the UserList which contains these.
+**/
 
-//at least some IDs must be precreated for an initial login
-//static
-int User::next_id = 1;
-
+//empty constructor so that this class is serializable
 User::User() {}
 
 User::User(std::string usern, std::string passw, int chq, int sav) {
-    if(next_id <= MAX_USERS) {
-        id = next_id++;
-    }
-    else {
-    	Admin::logExecutionTrace("Max users reached!");
-        std::cout << "Max number of users reached, could not create new user." << std::endl;
-    }
-
-    if(usern.compare("exit") == 0) {
-        //this is illegal
-        std::cout << "Nice try! You can't be named exit. Your username will be user" << id;
-        std::ostringstream oss;
-        oss << "user" << id;
-        usern = oss.str();
-    }
-
 	std::ostringstream oss;
     oss << "Creating a new user with data: " << usern << ", " << passw;
     Admin::logExecutionTrace(oss.str());
 
     //all user names are stored lowercase so they are case insenstive
+    transform(usern.begin(), usern.end(), usern.begin(), ::tolower);
     username = usern;
-    transform(username.begin(), username.end(), username.begin(), ::tolower);
     password = passw;
     //-1 indicates the account has not been opened/initialized/is closed
     //balances are in cents
@@ -39,10 +23,8 @@ User::User(std::string usern, std::string passw, int chq, int sav) {
     sav_bal = sav;
 }
 
-User::~User() {
-    //destruct
-}
-
+//changes the user's balance by amount, positive or negative.
+//isChq determines whether to edit chq or sav account
 void User::modifyBalance(bool isChq, int amount) {
 	std::ostringstream oss;
 	oss <<"Modifying balance of " << getUsername() << (isChq ? " chequing" : " savings") << " by " << amount;
@@ -53,14 +35,21 @@ void User::modifyBalance(bool isChq, int amount) {
 		sav_bal += amount;
 }
 
+//overload & operator for serialization out
 std::ostream & operator<<(std::ostream &os, const User &u)
 {
 	return os << u;
 }
 
+//overload & operator for serialization in
 std::istream & operator>>(std::istream &is, const User &u)
 {
     return is >> u;
+}
+
+//used by Manager class to change password
+void User::setPassword(std::string pw) {
+    password = pw;
 }
 
 ////////// GETTERS //////////
@@ -79,12 +68,4 @@ int User::getChequing() const {
 
 int User::getSavings() const {
 	return sav_bal;
-}
-
-int User::getMaxUsers() {
-    return MAX_USERS;
-}
-
-int User::getId() const {
-	return id;
 }

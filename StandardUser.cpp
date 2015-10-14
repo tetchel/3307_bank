@@ -2,8 +2,12 @@
 
 //in cents
 #define MIN_BALANCE 100000
-#define NUM_OPTIONS 8
+#define NUM_OPTIONS 9
 
+/**
+*   This class handles all operations performed by a 'standard' user; ie not the manager or sysadmin.
+*   Consists of all banking transactions.
+**/
 void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 	std::vector<std::string> actions;
 	actions.push_back("View balance(s)");
@@ -13,9 +17,11 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 	actions.push_back("Transfer funds to another user's account");
 	actions.push_back("Request a new account");
 	actions.push_back("Close an account");
+	actions.push_back("Change your password");
 
 	int input = 0;
 	while(input != NUM_OPTIONS) {
+        //they must open an account before doing anything
 		if(user->getChequing() == -1 && user->getSavings() == -1) {
 			std::cout << "You must open an account before you can do anything else." << std::endl;
 			input = 6;
@@ -23,10 +29,10 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 		else {
 			input = IOUtils::getUserAction(&actions);
 		}
-
+        //most transactions need this data, so get it here
 		int chq = user->getChequing();
 		int sav = user->getSavings();
-
+        //handle the transaction
 		switch(input) {
 			//view balances
 			case 1: {
@@ -45,6 +51,7 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 					if(deduct != 0) {
 						user->modifyBalance(chq_withdraw, -deduct);
 						std::cout << "Withdrawal successful." << std::endl;
+                        userlist->saveUsers();
 						printBalances(user);
 					}
 					else {
@@ -59,12 +66,13 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 			case 3: {
 				bool again = true;
 				while(again) {
-					bool chq_dep = selectAccount(chq, sav, "To which acccount would you like to deposit?");
+					bool chq_dep = selectAccount(chq, sav, "To which account would you like to deposit?");
 
 					int deposit = getDollarAmount();
 
 					user->modifyBalance(chq_dep, deposit);
 					printBalances(user);
+					userlist->saveUsers();
 
 					again = IOUtils::getUserResponse("Perform another deposit? ", 'y', 'n');
 				}
@@ -72,6 +80,7 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 			}
 			//transfer between accounts
 			case 4: {
+			    //to transfer between, they need 2 accounts.
 				if(chq == -1 || sav == -1) {
 					std::cout << "You only have one open account, so you can't make this kind of transfer.";
 					break;
@@ -80,10 +89,12 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 
 				int deduct = processDeduction(user, from_chq);
 				if(deduct != 0) {
+                    //remove cash from one user, add it to another
 					user->modifyBalance(from_chq, -deduct);
 					user->modifyBalance(!from_chq, deduct);
 					std::cout << "Transfer successful." << std::endl;
 					printBalances(user);
+                    userlist->saveUsers();
 				}
 				else
 					std::cout << "Transfer cancelled." << std::endl;
@@ -98,6 +109,7 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 
 					if(deduct != 0) {
 						bool enterUserAgain = true;
+						//keep looping until valid user is entered
 						while(enterUserAgain) {
 							std::cout << "Enter the username to make the transfer to: ";
 							std::string username;
@@ -116,6 +128,7 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 								user->modifyBalance(chq_trans, -deduct);
 								std::cout << "Transfer to " << username << " successful." << std::endl;
 								enterUserAgain = false;
+                                userlist->saveUsers();
 							}
 							else {
 								std::cout << "Recipent username was not found in the system." << std::endl;
@@ -134,6 +147,7 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 					if(chq == -1) {
 						user->modifyBalance(true, 1);
 						std::cout << "Chequing account successfully opened!" << std::endl;
+                        userlist->saveUsers();
 					}
 					else
 						std::cout << "You already have a chequing account!" << std::endl;
@@ -142,6 +156,7 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 					if(sav == -1) {
 						user->modifyBalance(false, 1);
 						std::cout << "Savings account successfully opened!" << std::endl;
+                        userlist->saveUsers();
 					}
 					else
 						std::cout << "You already have a savings account!" << std::endl;
@@ -155,6 +170,7 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 					if(chq == 0) {
 						user->modifyBalance(true, -1);
 						std::cout << "Your chequing account has been closed." << std::endl;
+                        userlist->saveUsers();
 					}
 					else {
 						std::cout << "Chequing balance is not zero, account not closed." << std::endl;
@@ -164,6 +180,7 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 					if(sav == 0) {
 						user->modifyBalance(false, -1);
 						std::cout << "Your savings account has been closed." << std::endl;
+                        userlist->saveUsers();
 					}
 					else {
 						std::cout << "Savings balance is not zero, account not closed." << std::endl;
@@ -171,16 +188,42 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 				}
 				break;
 			}
+			//password change
+			case 8: {
+                if(!IOUtils::getUserResponse("Are you sure you want to change your password?", 'y', 'n'))
+                    break;
+
+                bool again = true;
+                while(again) {
+                    std::cout << "Enter the new password: " << std::flush;
+                    std::string newpass, confirmpass;
+                    std::cin >> newpass;
+
+                    std::cout << "Confirm password: " << std::flush;
+                    std::cin >> confirmpass;
+                    if(newpass.compare(confirmpass) != 0) {
+                        again = IOUtils::getUserResponse("Passwords did not match. Try again?", 'y', 'n');
+                    }
+                    else {
+                        user->setPassword(newpass);
+                        std::cout << "Password successfully changed." << std::endl;
+                        again = false;
+                        userlist->saveUsers();
+                    }
+                }
+                break;
+			}
 		}
 		std::cout << std::endl;
 	}
 }
 
 //returns true for chq, false for sav
-//assumes they have an account, which is valid.
+//assumes they have an account, which is valid due to the check at the top of StandardUserOperations
 bool StandardUser::selectAccount(int chq_bal, int sav_bal, std::string msg) {
 	if(chq_bal != -1) {
 		if(sav_bal != -1)
+            //they have both accounts, so prompt them
 			return IOUtils::getUserResponse(msg, 'c', 's');
 		else
 			return true;
@@ -189,6 +232,7 @@ bool StandardUser::selectAccount(int chq_bal, int sav_bal, std::string msg) {
 		return false;
 }
 
+//prints user's balances in a nice form
 void StandardUser::printBalances(User* user) {
 	int chq = user->getChequing();
 	int sav = user->getSavings();
@@ -204,21 +248,25 @@ void StandardUser::printBalances(User* user) {
 		std::cout << "Savings Balance:  " << IOUtils::centsToString(sav) << std::endl;
 }
 
+//prompts the user for a dollar amount to withdraw/deposit/transfer etc, and returns it in cents.
 int StandardUser::getDollarAmount() {
 	//require a dollar amount
-	std::cout << "Enter the amount in dollars: ";
-	std::cout.flush();
+	std::cout << "Enter the amount in dollars: " << std::flush;
 	//garbage variable is for modf call. value is not used
 	double amount, garbage;
+	//check for invalid input
 	while(!(std::cin >> amount) || amount <= 0 || modf(amount*100, &garbage) != 0) {
 		std::cin.clear();
 		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-		std::cout << "Not a valid input. Enter a positive number only: ";
+		std::cout << "Not a valid input. Enter a positive number with 2 or fewer decimal places only: ";
 	}
 	//convert dollars to cents
 	return amount*100;
 }
 
+//helps process a transaction that deducts money from a user's account
+//checks if they have sufficient funds, if they'll go below minimum balance, and handles those cases
+//returns the amount to deduct from user's account - this is actually performed in the caller.
 int StandardUser::processDeduction(User* user, bool chq) {
 	int balance = chq ? user->getChequing() : user->getSavings();
 	std::cout << IOUtils::centsToString(balance) << " is available." << std::endl;
@@ -227,6 +275,7 @@ int StandardUser::processDeduction(User* user, bool chq) {
 	if(balance - amount > MIN_BALANCE || (balance - amount > 0 && !chq)) {
 		return amount;
 	}
+	//not enough money
 	else if (balance - amount < 0) {
 		std::cout 	<< "Insufficient funds!" << std::endl
 					<< "Current balance is " << IOUtils::centsToString(balance) << " and you entered " << IOUtils::centsToString(amount) << std::endl
@@ -238,21 +287,25 @@ int StandardUser::processDeduction(User* user, bool chq) {
 		else
 			return 0;
 	}
+	//else remaining cash will be 0 < cash < 1000 && it's the chequing account
+	//so, ask them if they are willing to pay the min balance fee
 	else {
 		if(IOUtils::getUserResponse(
 				"Warning: Performing this transaction will result in your account falling below the minimum balance of $1000.00, resulting in a charge of $2.00 CA. Continue?",
 				'y', 'n')) {
+            //make sure they'll actually have $2 left after performing
 			if(balance - amount < 200) {
 				std::cout << "Insufficient funds to pay the minimum balance fee after transaction." << std::endl;
 
 				return 0;
 			}
 			else {
-				//subtract the fee
+				//subtract the fee, good to go
 				user->modifyBalance(chq, -200);
 				return amount;
 			}
 		}
+		//they reneged on the transaction
 		else
 			return 0;
 	}

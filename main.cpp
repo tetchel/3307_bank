@@ -39,5 +39,6 @@ int main() {
     }
     users.saveUsers();
     std::cout << "Exiting the program...";
+    Admin::logExecutionTrace("Program exited normally");
     return 0;
 }
