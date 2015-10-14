@@ -1,0 +1,87 @@
+# depslib dependency file v1.0
+1444799217 source:/home/tim/programs/codeblocks_ws/Bank/Bank/Admin.cpp
+	"Admin.h"
+
+1444799211 /home/tim/programs/codeblocks_ws/Bank/Bank/Admin.h
+	"IOUtils.h"
+	<iostream>
+	<limits>
+	<fstream>
+	<ctime>
+	<sstream>
+	<vector>
+	<string>
+
+1444799290 /home/tim/programs/codeblocks_ws/Bank/Bank/IOUtils.h
+	"Admin.h"
+	<iostream>
+	<limits>
+	<string>
+	<vector>
+
+1444799281 source:/home/tim/programs/codeblocks_ws/Bank/Bank/IOUtils.cpp
+	"IOUtils.h"
+
+1444799122 source:/home/tim/programs/codeblocks_ws/Bank/Bank/main.cpp
+	"User.h"
+	"Admin.h"
+	"Manager.h"
+	"UserList.h"
+	"StandardUser.h"
+	<iostream>
+	<string>
+
+1444799258 /home/tim/programs/codeblocks_ws/Bank/Bank/User.h
+	"Admin.h"
+	<iostream>
+	<algorithm>
+	<limits>
+	<sstream>
+	<string>
+	<vector>
+	<boost/archive/text_iarchive.hpp>
+	<boost/archive/text_oarchive.hpp>
+
+1444799221 /home/tim/programs/codeblocks_ws/Bank/Bank/Manager.h
+	"User.h"
+	"UserList.h"
+	"IOUtils.h"
+	<iostream>
+	<vector>
+	<string>
+	<algorithm>
+
+1444799855 /home/tim/programs/codeblocks_ws/Bank/Bank/UserList.h
+	"User.h"
+	"Admin.h"
+	<iostream>
+	<fstream>
+	<algorithm>
+	<string>
+	<vector>
+	<boost/archive/text_oarchive.hpp>
+	<boost/archive/text_iarchive.hpp>
+	<boost/serialization/vector.hpp>
+
+1444799276 /home/tim/programs/codeblocks_ws/Bank/Bank/StandardUser.h
+	"User.h"
+	"UserList.h"
+	"IOUtils.h"
+	<iostream>
+	<limits>
+	<sstream>
+	<cmath>
+	<algorithm>
+
+1444799224 source:/home/tim/programs/codeblocks_ws/Bank/Bank/Manager.cpp
+	"Manager.h"
+
+1444800174 source:/home/tim/programs/codeblocks_ws/Bank/Bank/StandardUser.cpp
+	"StandardUser.h"
+
+1444799254 source:/home/tim/programs/codeblocks_ws/Bank/Bank/User.cpp
+	"User.h"
+
+1444799957 source:/home/tim/programs/codeblocks_ws/Bank/Bank/UserList.cpp
+	"UserList.h"
+
