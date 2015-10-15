@@ -1,0 +1,63 @@
+********************************
+	3307 Banking Assignment
+      For October 14 2015
+      Author Tim Etchells
+ Developed and tested on Ubuntu
+********************************
+
+NOTE: Run this program for the first time with NO users.ser in the working directory to ensure easy use!
+
+*********************************
+===== Minimum Requirements ======
+*********************************
+
+The unique ids for each requirement are sorted by role - eg S1, M1.
+
+Standard User:
+S 1. User can view balances of any and all accounts they currently have open.
+S 2. User can withdraw any amount of cash from either chequing or savings account, so long as they have the funds.
+	- If the chequing account falls below $1000.00, the user is charged 2.00 per withdraw or transfer transaction with the post-transaction balance below this amount.
+		- He or she is given the option to cancel the transaction if this is the case
+S 3. User can deposit funds into his or her chequing or savings account.
+S 4. User can transfer funds from chequing to savings, and vice versa. 
+S 5. User can request to open a chequing or savings account, if s/he does not already have the selected type of account.
+S 6. User can close any open account with a balance of $0.
+
+Manager:
+M 1. Manager can view the data for a user, consisting of username and the balances for any open accounts.
+M 2. Manager can view the data for all users in the same format as a single user.
+M 3. Manager can view the total funds in the bank - total chequing, total savings, and overall total.
+M 4. Manager can add new users to the system. The user can then request to open their own chequing/savings accounts.
+M 5. Manager can remove any user from the system.
+
+Administrator/Maintainence person
+A 1. An execution trace of all important function calls and program actions is saved to the working directory, in a file called log.txt.
+	- Administrator can toggle the execution trace ON and OFF, though it is on by default each time the program is started.
+A 2. The admin can view the contents of the execution trace log.txt at any time, either by option 2 in the admin menu or by opening the file itself.
+A 3. The admin can clear the execution trace at any time. This will not toggle logging.
+
+*************************
+===== Enhancements =====
+************************
+
+E1. Any user has the ability to change his or her password at any time. This includes manager and admin.
+
+	This simply took adding another function to IOUtils, accepting a username and the userlist vector. It then interfaces with the user to help change the user's password.
+
+E2. Bank data is stored in a serialized file, which is not plaintext and cannot be read by normal means.
+	
+	Serializing the data was done using boost's binary serialization library. User had to be made serializable by adding the method serialize() to User.h, as well as overloading << and >> in User.cpp. The functions saveUsers() and loadUsers() in UserList are also used to save and load the serialized data. The UserList users vector can be serialized using the library alone.
+
+E3. A standard user can make a money transfer to another standard user, for no fee. This applies the minimum balance fee the same way as a withdrawal.
+	
+	This took adding another StandardUser option which used the processDeduction function. It performs all the necessary checks for the transferring user, then gets the recipent user from the UserList and modifies balances accordingly.
+
+E4. The manager can send a private message to any standard user in the system. The message will be shown once after the user logs in, and will persist if the system is shut down before the user views his or her messages.	
+	This required adding a new vector<std::string> field to the User class to store messages, as well as function message(std::string) to add new messages to the vector. A function was also implemented to view all messages for a user (if they have any in queue), called each time the user logs in.
+
+
+**************************
+===== What I Learned =====
+**************************
+
+This was my first experience developing a large C++ program, and I learned a great deal about how to use C++'s object-oriented features, handling multiple classes and how to manage files in C++. E2 used object serialization, a very important feature of any language. This also lead to learning how to overload operators in a class. I also learned how to effectively work with file input/output in C++. Pointers are another feature of C++ I was not comfortable with, but I feel as though I am able to work much more effectively with them now.

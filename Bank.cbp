@@ -34,9 +34,6 @@
 		</Compiler>
 		<Unit filename="Admin.cpp" />
 		<Unit filename="Admin.h" />
-		<Unit filename="Bank.cbp" />
-		<Unit filename="Bank.depend" />
-		<Unit filename="Bank.layout" />
 		<Unit filename="IOUtils.cpp" />
 		<Unit filename="IOUtils.h" />
 		<Unit filename="Manager.cpp" />
@@ -51,7 +48,6 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
-			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

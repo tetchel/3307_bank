@@ -8,6 +8,7 @@
 //empty constructor so that this class is serializable
 User::User() {}
 
+std::vector<std::string> msgs;
 User::User(std::string usern, std::string passw, int chq, int sav) {
 	std::ostringstream oss;
     oss << "Creating a new user with data: " << usern << ", " << passw;
@@ -50,6 +51,23 @@ std::istream & operator>>(std::istream &is, const User &u)
 //used by Manager class to change password
 void User::setPassword(std::string pw) {
     password = pw;
+}
+
+void User::message(std::string msg) {
+    msgs.push_back(msg);
+}
+
+void User::printMessages() {
+    if(msgs.size() > 0) {
+        std::cout << "Message from the Manager: " << std::endl;
+        Admin::logExecutionTrace(this->getUsername() + " viewed messages");
+    }
+    for(std::vector<std::string>::iterator it = msgs.begin(); it != msgs.end(); ++it) {
+		std::cout << *it << std::endl;
+	}
+	if(msgs.size() > 0) {
+        msgs.clear();
+    }
 }
 
 ////////// GETTERS //////////

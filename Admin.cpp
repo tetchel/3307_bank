@@ -1,7 +1,8 @@
 #include "Admin.h"
 
-#define NUM_OPTIONS 4
+#define NUM_OPTIONS 5
 #define LOGFILE "log.txt"
+#define ADMIN_NAME "admin"
 
 /**
 *   This class handles Admin operations, which consist of toggling execution tracing, viewing the contents of the trace,
@@ -9,7 +10,7 @@
 **/
 //on by default at startup.
 bool Admin::execTrace = true;
-void Admin::adminOperations() {
+void Admin::adminOperations(UserList* userlist) {
 	std::vector<std::string> actions;
 	std::ostringstream oss;
 	oss << "Toggle execution trace - Currently " << (execTrace ? "ON" : "OFF");
@@ -17,6 +18,7 @@ void Admin::adminOperations() {
 	actions.push_back(oss.str());
 	actions.push_back("View the contents of the execution trace");
 	actions.push_back("Clear the execution trace log");
+	actions.push_back("Change your password");
 
 	int input = 0;
 	while(input != NUM_OPTIONS) {
@@ -46,6 +48,14 @@ void Admin::adminOperations() {
 				std::cout << "Log file has been cleared." << std::endl;
 				break;
 			}
+            case 4: {
+                if(!IOUtils::getUserResponse("Are you sure you want to change your password?", 'y', 'n'))
+                    break;
+
+                IOUtils::changePassword(ADMIN_NAME, userlist);
+
+                break;
+			}
 		}
 	}
 }
@@ -66,4 +76,8 @@ void Admin::logExecutionTrace(std::string s) {
     //log it, in append mode
 	std::ofstream tracefile(LOGFILE, std::ios_base::app);
 	tracefile << formattedTime << s << std::endl;
+}
+
+std::string Admin::getAdminName() {
+    return ADMIN_NAME;
 }

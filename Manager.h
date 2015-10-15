@@ -9,10 +9,16 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <limits>
+#include <sstream>
+
+class UserList;
+class User;
 
 class Manager {
 public:
 	static void managerOperations(UserList*);
+	static std::string getManagerName();
 private:
     static void outputUserInfo(User*);
 };

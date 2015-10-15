@@ -1,6 +1,7 @@
 #include "UserList.h"
 
 #define SERIAL_NAME "users.ser"
+#define XOR_KEY
 
 /**
 *   This is a data type class which holds the vector containing pointers to all users.
@@ -23,8 +24,8 @@ UserList::UserList() {
     else {
         std::cout << "No saved user data found. Creating superusers and a sample regular user with usernames 'manager', 'admin', and 'jsmith'. Passwords match lowercase usernames." << std::endl;
         //create superusers
-        users.push_back(new User("Manager", "manager", -1, -1));
-        users.push_back(new User("Admin", "admin", -1, -1));
+        users.push_back(new User(Manager::getManagerName(), Manager::getManagerName(), -1, -1));
+        users.push_back(new User(Admin::getAdminName(), Admin::getAdminName(), -1, -1));
         //create a demo user
         users.push_back(new User("jsmith", "jsmith", 500000, 200000));
         saveUsers();
@@ -42,14 +43,14 @@ UserList::~UserList() {
 //serializes the vector to file
 void UserList::saveUsers() {
     std::ofstream ofs(SERIAL_NAME);
-    boost::archive::text_oarchive oa(ofs);
+    boost::archive::binary_oarchive oa(ofs);
     oa << users;
 }
 
 //loads serialized data into vector
 void UserList::loadUsers() {
 	std::ifstream ifs(SERIAL_NAME);
-    boost::archive::text_iarchive ia(ifs);
+    boost::archive::binary_iarchive ia(ifs);
     ia >> users;
 }
 
@@ -75,9 +76,13 @@ User* UserList::login() {
 
         //if the user exists, prompt for a password
 		if((currentUser = getUser(username)) != NULL) {
-            int attempts = 0;
-			while(!logged_in && attempts++ < 5) {
-				std::cout << "Password: ";
+            int attempts = -1;
+			while(!logged_in && attempts++ < 4) {
+                if(attempts > 0)
+                    std::cout << "[" << attempts << "] " << "Password: ";
+                else
+                    std::cout << "Password: ";
+
 				std::string password;
 				std::cin >> password;
 
@@ -108,14 +113,27 @@ void UserList::addUser(std::string username, std::string password) {
 	users.push_back(new User(username, password, -1, -1));
 }
 
+//removes the user with the given username from the system
+void UserList::removeUser(std::string username) {
+    int index = getIndexOf(getUser(username));
+    delete users[index];
+    users.erase(users.begin()+index);
+}
+
 //how many users are in the list
-int UserList::countUsers() {
+int UserList::countUsers() const {
     return users.size();
 }
 
 //returns the user at index i - useful for looping through all users
-User* UserList::getUser(int index) {
+User* UserList::getUser(int index) const {
     return users.at(index);
+}
+
+//helper for removeUser
+//returns the index of the passed user
+int UserList::getIndexOf(User* user) {
+    return find(users.begin(), users.end(), user) - users.begin();
 }
 
 //returns the user* to the user with the given username

@@ -2,6 +2,7 @@
 #define ADMIN_H_
 
 #include "IOUtils.h"
+#include "UserList.h"
 
 #include <iostream>
 #include <limits>
@@ -13,8 +14,9 @@
 
 class Admin {
 public:
-	static void adminOperations();
+	static void adminOperations(UserList* users);
 	static void logExecutionTrace(std::string s);
+	static std::string getAdminName();
 private:
 	static bool execTrace;
 };

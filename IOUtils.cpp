@@ -37,6 +37,7 @@ int IOUtils::getUserAction(std::vector<std::string>* options) {
 bool IOUtils::getUserResponse(std::string msg, const char option1, const char option2) {
 	std::cout << msg << " [" << option1 << "/" << option2 << "] : " << std::flush;
 	//loop until option1 or option2 is given, upon which the function returns
+	std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 	while(true) {
 		char c;
 		if(std::cin >> c && std::cin.peek() == '\n') {
@@ -52,6 +53,30 @@ bool IOUtils::getUserResponse(std::string msg, const char option1, const char op
 	}
 	//never executed
 	return true;
+}
+
+//changes the password of any user
+//accepts a pointer to the user to be changed, and a pointer to the userlist
+//so that all the work can be done here, since it's the exact same procedure in all calling classes.
+void IOUtils::changePassword(std::string username, UserList* userlist) {
+    bool again = true;
+    while(again) {
+            std::cout << "Enter the new password: " << std::flush;
+            std::string newpass, confirmpass;
+            std::cin >> newpass;
+
+            std::cout << "Confirm password: " << std::flush;
+            std::cin >> confirmpass;
+            if(newpass.compare(confirmpass) != 0) {
+                again = IOUtils::getUserResponse("Passwords did not match. Try again?", 'y', 'n');
+            }
+            else {
+            userlist->getUser(username)->setPassword(newpass);
+            std::cout << "Password successfully changed." << std::endl;
+            again = false;
+            userlist->saveUsers();
+        }
+    }
 }
 
 //converts an int amount of cents to the form we're used to seeing money in

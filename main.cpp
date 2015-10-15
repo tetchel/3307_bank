@@ -7,10 +7,6 @@
 #include <iostream>
 #include <string>
 
-//manager and admin usernames since these will be checked
-#define MANAGER "manager"
-#define ADMIN "admin"
-
 int main() {
 	std::cout << "Welcome to the bank. Please sign in:" << std::endl;
 
@@ -24,11 +20,11 @@ int main() {
     	Admin::logExecutionTrace(username + " successfully logged in");
 		//now a user is logged in. call the appropriate static "operations" method
     	//after the call returns, their session is finished
-		if(username.compare(MANAGER) == 0) {
+		if(username.compare(Manager::getManagerName()) == 0) {
 			Manager::managerOperations(&users);
 		}
-		else if(username.compare(ADMIN) == 0) {
-			Admin::adminOperations();
+		else if(username.compare(Admin::getAdminName()) == 0) {
+			Admin::adminOperations(&users);
 		}
 		else {
 			//normal
@@ -38,7 +34,7 @@ int main() {
 		Admin::logExecutionTrace(username + " logged out");
     }
     users.saveUsers();
-    std::cout << "Exiting the program...";
+    std::cout << "Exiting the program..." << std::endl;
     Admin::logExecutionTrace("Program exited normally");
     return 0;
 }

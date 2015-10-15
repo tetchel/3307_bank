@@ -19,6 +19,8 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
 	actions.push_back("Close an account");
 	actions.push_back("Change your password");
 
+	user->printMessages();
+
 	int input = 0;
 	while(input != NUM_OPTIONS) {
         //they must open an account before doing anything
@@ -193,28 +195,11 @@ void StandardUser::standardUserOperations(User* user, UserList* userlist) {
                 if(!IOUtils::getUserResponse("Are you sure you want to change your password?", 'y', 'n'))
                     break;
 
-                bool again = true;
-                while(again) {
-                    std::cout << "Enter the new password: " << std::flush;
-                    std::string newpass, confirmpass;
-                    std::cin >> newpass;
+                IOUtils::changePassword(user->getUsername(), userlist);
 
-                    std::cout << "Confirm password: " << std::flush;
-                    std::cin >> confirmpass;
-                    if(newpass.compare(confirmpass) != 0) {
-                        again = IOUtils::getUserResponse("Passwords did not match. Try again?", 'y', 'n');
-                    }
-                    else {
-                        user->setPassword(newpass);
-                        std::cout << "Password successfully changed." << std::endl;
-                        again = false;
-                        userlist->saveUsers();
-                    }
-                }
                 break;
 			}
 		}
-		std::cout << std::endl;
 	}
 }
 

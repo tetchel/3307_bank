@@ -1,17 +1,20 @@
 #include "Manager.h"
 
-#define NUM_OPTIONS 5
-
+#define NUM_OPTIONS 8
+#define MANAGER_NAME "manager"
 /**
 *   This class handles all operations performed by the Bank Manager.
 *   Includes viewing user details, adding a user, or viewing bank funds.
 **/
-void Manager::managerOperations(UserList* userList) {
+void Manager::managerOperations(UserList* userlist) {
 	std::vector<std::string> actions;
 	actions.push_back("View data for a user");
 	actions.push_back("View data for all users");
 	actions.push_back("View total bank funds");
 	actions.push_back("Add a user to the system");
+	actions.push_back("Remove a user from the system");
+	actions.push_back("Change your password");
+	actions.push_back("Send a message to a user");
 
 	int input = 0;
 
@@ -29,8 +32,8 @@ void Manager::managerOperations(UserList* userList) {
 					std::cin >> username;
 					transform(username.begin(), username.end(), username.begin(), ::tolower);
 
-                    if(userList->getUser(username) != NULL) {
-                        outputUserInfo(userList->getUser(username));
+                    if(userlist->getUser(username) != NULL) {
+                        outputUserInfo(userlist->getUser(username));
                         enterUserAgain = false;
                     }
                     else {
@@ -44,8 +47,8 @@ void Manager::managerOperations(UserList* userList) {
 			case 2: {
                 int i;
                 //start at 2 because 0 and 1 are the superusers, who don't have any money.
-                for (i = 2; i < userList->countUsers(); i++) {
-                    outputUserInfo(userList->getUser(i));
+                for (i = 2; i < userlist->countUsers(); i++) {
+                    outputUserInfo(userlist->getUser(i));
                 }
 				break;
 			}
@@ -55,9 +58,9 @@ void Manager::managerOperations(UserList* userList) {
                     sav_sum = 0,
                     i = 0;
                 //loop through users, keep a running total of their cash
-                for (i = 2; i < userList->countUsers(); i++) {
-                    int chq = userList->getUser(i)->getChequing(),
-                        sav = userList->getUser(i)->getSavings();
+                for (i = 2; i < userlist->countUsers(); i++) {
+                    int chq = userlist->getUser(i)->getChequing(),
+                        sav = userlist->getUser(i)->getSavings();
                     if(chq != -1)
                         chq_sum += chq;
                     if(sav != -1)
@@ -77,20 +80,94 @@ void Manager::managerOperations(UserList* userList) {
                     std::cin >> username;
                     transform(username.begin(), username.end(), username.begin(), ::tolower);
 
-                    if(userList->getUser(username) != NULL) {
+                    if(userlist->getUser(username) != NULL) {
                         std::cout << "User " << username << " already exists." << std::endl;
+                        again = IOUtils::getUserResponse("Enter a different username?", 'y', 'n');
                     }
                     else {
                         std::cout << "Enter the password: ";
                         std::string password;
                         std::cin >> password;
-                        userList->addUser(username, password);
+                        userlist->addUser(username, password);
                         std::cout << "User " << username << " created with password " << password << std::endl;
                         //save the new user into the .ser
-                        userList->saveUsers();
+                        userlist->saveUsers();
+                        again = false;
+                        Admin::logExecutionTrace(username + " was added");
+                    }
+                }
+                break;
+			}
+			//remove a user
+			case 5: {
+                bool again = true;
+			    while(again) {
+                    std::cout << "Enter the username to remove: ";
+                    std::string username;
+                    std::cin >> username;
+                    transform(username.begin(), username.end(), username.begin(), ::tolower);
+
+                    if(username.compare("admin") == 0 || username.compare("manager") == 0) {
+                        std::cout << "You can't delete that user!" << std::endl;
+                    }
+                    else if(userlist->getUser(username) == NULL) {
+                        std::cout << "User " << username << " doesn't exist." << std::endl;
+                        again = IOUtils::getUserResponse("Enter a different username?", 'y', 'n');
+                    }
+                    else {
+                        userlist->removeUser(username);
+                        std::cout << "User " << username << " removed" << std::endl;
+                        //update .ser
+                        userlist->saveUsers();
+                        again = false;
+                        Admin::logExecutionTrace(username + " was removed");
+                    }
+                }
+                break;
+            }
+            case 6: {
+                if(!IOUtils::getUserResponse("Are you sure you want to change your password?", 'y', 'n'))
+                    break;
+
+                IOUtils::changePassword(MANAGER_NAME, userlist);
+
+                break;
+			}
+			//send a message to a user
+			case 7: {
+                bool again = true;
+			    while(again) {
+                    std::cout << "Enter the user to message: ";
+                    std::string username;
+                    std::cin >> username;
+                    transform(username.begin(), username.end(), username.begin(), ::tolower);
+
+                    if(username.compare("admin") == 0 || username.compare("manager") == 0) {
+                        std::cout << "You can't message that user!" << std::endl;
+                    }
+                    else if(userlist->getUser(username) == NULL) {
+                        std::cout << "User " << username << " doesn't exist." << std::endl;
+                        again = IOUtils::getUserResponse("Enter a different username?", 'y', 'n');
+                    }
+                    else {
+                        std::cout << "Enter the message on one line, press RETURN twice to finish: " << std::endl;
+                        std::string msg;
+                        std::cin.ignore();
+                        //get message
+                        std::getline(std::cin, msg);
+
+                        //add it to the user's list
+                        userlist->getUser(username)->message(msg);
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        userlist->saveUsers();
+                        std::cout << "Successfully messaged " << username << std::endl;
+                        std::ostringstream oss;
+                        oss << "Messaged " << username << " \"" << msg << "\"";
+                        Admin::logExecutionTrace(oss.str());
                         again = false;
                     }
                 }
+                break;
 			}
 		}
 	}
@@ -111,4 +188,8 @@ void Manager::outputUserInfo(User* user) {
         std::cout << "Savings Balance: " << IOUtils::centsToString(sav)  << std::endl;
     else
         std::cout << "No savings account." << std::endl;
+}
+
+std::string Manager::getManagerName() {
+    return MANAGER_NAME;
 }

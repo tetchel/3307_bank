@@ -1,0 +1,521 @@
+******************************************
+===== Sending and Receiving messages =====
+******************************************
+
+- Manager logs in
+- Sends 2 messages to jsmith
+- Logs out and exists the program
+- Restart the program
+- jsmith logs in
+- Sees his messages
+- Logs out
+- Logs back in, messages are now gone
+- Logs out and exits
+
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ ./Bank 
+Welcome to the bank. Please sign in:
+Username: manager
+Password: m
+Incorrect password. Passwords are case-sensitive.
+[1] Password: manager
+Welcome, manager.
+
+What would you like to do?
+1. View data for a user
+2. View data for all users
+3. View total bank funds
+4. Add a user to the system
+5. Remove a user from the system
+6. Change your password
+7. Send a message to a user
+8. Log out
+7
+
+Enter the user to message: jsmith
+Enter the message on one line, press RETURN twice to finish: 
+hello jon smith
+
+Successfully messaged jsmith
+
+What would you like to do?
+1. View data for a user
+2. View data for all users
+3. View total bank funds
+4. Add a user to the system
+5. Remove a user from the system
+6. Change your password
+7. Send a message to a user
+8. Log out
+7
+
+Enter the user to message: jsmith
+Enter the message on one line, press RETURN twice to finish: 
+here's another msg 
+
+Successfully messaged jsmith
+
+What would you like to do?
+1. View data for a user
+2. View data for all users
+3. View total bank funds
+4. Add a user to the system
+5. Remove a user from the system
+6. Change your password
+7. Send a message to a user
+8. Log out
+8
+
+Logging you out...
+Username: exit
+Exiting the program...
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ ./Bank 
+Welcome to the bank. Please sign in:
+Username: jsmith
+Password: jsmith
+Welcome, jsmith.
+Message from the Manager: 
+hello jon smith
+here's another msg
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+9
+
+Logging you out...
+Username: jsmith
+Password: jsmith
+Welcome, jsmith.
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+9
+
+Logging you out...
+Username: exit
+Exiting the program...
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ 
+
+
+*******************************
+===== Manager Operations ======
+*******************************
+
+- Manager logs in 
+- Views data for jsmith
+- Creates user bwayne
+- Views data for all users
+- Logs out and exits
+
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ ./Bank 
+Welcome to the bank. Please sign in:
+Username: manager
+Password: manager
+Welcome, manager.
+
+What would you like to do?
+1. View data for a user
+2. View data for all users
+3. View total bank funds
+4. Add a user to the system
+5. Remove a user from the system
+6. Change your password
+7. Log out
+1
+
+Enter the username: jsmith
+Data for jsmith: 
+Chequing Balance: $5020.00
+Savings Balance: $2000.00
+
+What would you like to do?
+1. View data for a user
+2. View data for all users
+3. View total bank funds
+4. Add a user to the system
+5. Remove a user from the system
+6. Change your password
+7. Log out
+4
+
+Enter the username to create: bwayne
+Enter the password: bwayne
+User bwayne created with password bwayne
+
+What would you like to do?
+1. View data for a user
+2. View data for all users
+3. View total bank funds
+4. Add a user to the system
+5. Remove a user from the system
+6. Change your password
+7. Log out
+2
+
+Data for jsmith: 
+Chequing Balance: $5020.00
+Savings Balance: $2000.00
+Data for bwayne: 
+No chequing account.
+No savings account.
+
+What would you like to do?
+1. View data for a user
+2. View data for all users
+3. View total bank funds
+4. Add a user to the system
+5. Remove a user from the system
+6. Change your password
+7. Log out
+7
+
+Logging you out...
+Username: exikt
+Username not found, please re-enter or type "exit" to leave the application.
+Usernames are not case sensitive.
+Username: exit
+Exiting the program...
+
+*****************************************************
+===== Depositing, transferring, and withdrawing =====
+*****************************************************
+
+- bwayne logs in
+- Creates a chequing account, since he doesn't have an account
+- Deposits $2000 into chequing
+- Fails a transfer to admin
+- Transfers $1200 to jsmith, paying the min balance fee
+- Withdraws $5, logs out and exits
+
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ ./Bank 
+Welcome to the bank. Please sign in:
+Username: bwayne
+Password: bwayne
+Welcome, bwayne.
+You must open an account before you can do anything else.
+What type of account would you like to open? [c/s] : c
+Chequing account successfully opened!
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+3
+
+Enter the amount in dollars: 2000
+Your current balances:
+Chequing Balance: $2000.00
+Perform another deposit?  [y/n] : n
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+5
+
+$2000.00 is available.
+Enter the amount in dollars: 1200
+Warning: Performing this transaction will result in your account falling below the minimum balance of $1000.00, resulting in a charge of $2.00 CA. Continue? [y/n] : y
+Enter the username to make the transfer to: admin
+You can't make a transfer to that person!
+Enter the username to make the transfer to: jsmith
+Transfer to jsmith successful.
+Would you like to make another transfer? [y/n] : n
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+1
+
+Your current balances:
+Chequing Balance: $798.00
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+2
+
+$798.00 is available.
+Enter the amount in dollars: 5
+Warning: Performing this transaction will result in your account falling below the minimum balance of $1000.00, resulting in a charge of $2.00 CA. Continue? [y/n] : y
+Withdrawal successful.
+Your current balances:
+Chequing Balance: $791.00
+Perform another withdrawal?  [y/n] : n
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+9
+
+Logging you out...
+Username: exit
+Exiting the program...
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ 
+
+*********************************************
+===== Admin Checks the Execution Trace ======
+*********************************************
+
+- Admin logs in
+- Views the execution trace
+- Clears the execution trace
+- Views the empty trace
+- Logs out and exits
+
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ ./Bank 
+Welcome to the bank. Please sign in:
+Username: admin
+Password: admin
+Welcome, admin.
+
+What would you like to do?
+1. Toggle execution trace - Currently ON
+2. View the contents of the execution trace
+3. Clear the execution trace log
+4. Change your password
+5. Log out
+2
+
+[10/14/15 19:37] ********** NEW SESSION **********
+[10/14/15 19:37] bwayne successfully logged in
+[10/14/15 19:37] Modifying balance of bwayne chequing by 1
+[10/14/15 19:37] Action: Make a deposit
+[10/14/15 19:37] Modifying balance of bwayne chequing by 200000
+[10/14/15 19:37] Action: Transfer funds to another user's account
+[10/14/15 19:37] Modifying balance of bwayne chequing by -200
+[10/14/15 19:37] Modifying balance of jsmith chequing by 120000
+[10/14/15 19:37] Modifying balance of bwayne chequing by -120000
+[10/14/15 19:37] Action: View balance(s)
+[10/14/15 19:37] Action: Withdraw cash
+[10/14/15 19:37] Modifying balance of bwayne chequing by -200
+[10/14/15 19:37] Modifying balance of bwayne chequing by -500
+[10/14/15 19:37] bwayne logged out
+[10/14/15 19:37] Program exited normally
+[10/14/15 19:39] ********** NEW SESSION **********
+[10/14/15 19:39] admin successfully logged in
+[10/14/15 19:39] Action: View the contents of the execution trace
+
+What would you like to do?
+1. Toggle execution trace - Currently ON
+2. View the contents of the execution trace
+3. Clear the execution trace log
+4. Change your password
+5. Log out
+3
+
+Log file has been cleared.
+
+What would you like to do?
+1. Toggle execution trace - Currently ON
+2. View the contents of the execution trace
+3. Clear the execution trace log
+4. Change your password
+5. Log out
+2
+
+[10/14/15 19:39] Action: View the contents of the execution trace
+
+What would you like to do?
+1. Toggle execution trace - Currently ON
+2. View the contents of the execution trace
+3. Clear the execution trace log
+4. Change your password
+5. Log out
+5
+
+Logging you out...
+Username: exit
+Exiting the program...
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ 
+
+*******************************
+====== Closing an account =====
+*******************************
+
+- jsmith logs in
+- Views balances after transfer from bwayne
+- Tries to close chequing account and fails
+- Tries to withdraw his chequing balance and fails to pay the fee
+- Withdraws the rest of his chequing account and pays the fee
+- Views his new balances
+- Closes his chequing account successfully
+- Views his balances
+- Logs out and exits
+
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ ./Bank 
+Welcome to the bank. Please sign in:
+Username: jsmith
+Password: 
+jsmith
+Welcome, jsmith.
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+1
+
+Your current balances:
+Chequing Balance: $6220.00
+Savings Balance:  $2000.00
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+7
+
+You must have $0.00 balance in an account in order to be able to close it.
+Which account would you like to close? [c/s] : c
+Chequing balance is not zero, account not closed.
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+2  
+
+From which acccount would you like to withdraw? [c/s] : c
+$6220.00 is available.
+Enter the amount in dollars: 6220
+Warning: Performing this transaction will result in your account falling below the minimum balance of $1000.00, resulting in a charge of $2.00 CA. Continue? [y/n] : y
+Insufficient funds to pay the minimum balance fee after transaction.
+Withdrawal cancelled.
+Perform another withdrawal?  [y/n] : n
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+2
+
+From which acccount would you like to withdraw? [c/s] : c
+$6220.00 is available.
+Enter the amount in dollars: 6218
+Warning: Performing this transaction will result in your account falling below the minimum balance of $1000.00, resulting in a charge of $2.00 CA. Continue? [y/n] : y
+Withdrawal successful.
+Your current balances:
+Chequing Balance: $0.00
+Savings Balance:  $2000.00
+Perform another withdrawal?  [y/n] : n
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+7
+
+You must have $0.00 balance in an account in order to be able to close it.
+Which account would you like to close? [c/s] : c
+Your chequing account has been closed.
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+1
+
+Your current balances:
+Savings Balance:  $2000.00
+
+What would you like to do?
+1. View balance(s)
+2. Withdraw cash
+3. Make a deposit
+4. Transfer funds between your accounts
+5. Transfer funds to another user's account
+6. Request a new account
+7. Close an account
+8. Change your password
+9. Log out
+9
+
+Logging you out...
+Username: exit
+Exiting the program...
+tim@z:~/programs/codeblocks_ws/Bank/Bank/bin/Debug$ 

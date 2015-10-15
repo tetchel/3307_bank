@@ -9,19 +9,21 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 
 class User
 {
 public:
     User();
     User(std::string, std::string, int chq, int sav);
-//    virtual ~User();
+    //used by standardUserOperations
     void modifyBalance(bool, int);
-    static int getMaxUsers() ;
+    //used by manager
     void setPassword(std::string);
-
+    void message(std::string msg);
+    void printMessages();
+    //getters
     std::string getUsername() const;
     std::string getPassword() const;
     int getChequing() const;
@@ -31,6 +33,8 @@ private:
     std::string password;
     int chq_bal;
     int sav_bal;
+    std::vector<std::string> msgs;
+
     //code required to serialize User
     friend class boost::serialization::access;
     template<class Archive>
@@ -39,6 +43,7 @@ private:
         ar & password;
         ar & chq_bal;
         ar & sav_bal;
+        ar & msgs;
     }
 };
 

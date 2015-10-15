@@ -1,9 +1,10 @@
 # depslib dependency file v1.0
-1444799217 source:/home/tim/programs/codeblocks_ws/Bank/Bank/Admin.cpp
+1444868439 source:/home/tim/programs/codeblocks_ws/Bank/Bank/Admin.cpp
 	"Admin.h"
 
-1444799211 /home/tim/programs/codeblocks_ws/Bank/Bank/Admin.h
+1444868200 /home/tim/programs/codeblocks_ws/Bank/Bank/Admin.h
 	"IOUtils.h"
+	"UserList.h"
 	<iostream>
 	<limits>
 	<fstream>
@@ -12,17 +13,18 @@
 	<vector>
 	<string>
 
-1444801652 /home/tim/programs/codeblocks_ws/Bank/Bank/IOUtils.h
+1444866787 /home/tim/programs/codeblocks_ws/Bank/Bank/IOUtils.h
 	"Admin.h"
+	"UserList.h"
 	<iostream>
 	<limits>
 	<string>
 	<vector>
 
-1444801637 source:/home/tim/programs/codeblocks_ws/Bank/Bank/IOUtils.cpp
+1444873208 source:/home/tim/programs/codeblocks_ws/Bank/Bank/IOUtils.cpp
 	"IOUtils.h"
 
-1444799122 source:/home/tim/programs/codeblocks_ws/Bank/Bank/main.cpp
+1444869203 source:/home/tim/programs/codeblocks_ws/Bank/Bank/main.cpp
 	"User.h"
 	"Admin.h"
 	"Manager.h"
@@ -31,7 +33,7 @@
 	<iostream>
 	<string>
 
-1444801073 /home/tim/programs/codeblocks_ws/Bank/Bank/User.h
+1444876146 /home/tim/programs/codeblocks_ws/Bank/Bank/User.h
 	"Admin.h"
 	<iostream>
 	<algorithm>
@@ -39,10 +41,10 @@
 	<sstream>
 	<string>
 	<vector>
-	<boost/archive/text_iarchive.hpp>
-	<boost/archive/text_oarchive.hpp>
+	<boost/archive/binary_iarchive.hpp>
+	<boost/archive/binary_oarchive.hpp>
 
-1444801945 /home/tim/programs/codeblocks_ws/Bank/Bank/Manager.h
+1444876389 /home/tim/programs/codeblocks_ws/Bank/Bank/Manager.h
 	"User.h"
 	"UserList.h"
 	"IOUtils.h"
@@ -50,17 +52,20 @@
 	<vector>
 	<string>
 	<algorithm>
+	<limits>
+	<sstream>
 
-1444801424 /home/tim/programs/codeblocks_ws/Bank/Bank/UserList.h
+1444868320 /home/tim/programs/codeblocks_ws/Bank/Bank/UserList.h
 	"User.h"
 	"Admin.h"
+	"Manager.h"
 	<iostream>
 	<fstream>
 	<algorithm>
 	<string>
 	<vector>
-	<boost/archive/text_oarchive.hpp>
-	<boost/archive/text_iarchive.hpp>
+	<boost/archive/binary_oarchive.hpp>
+	<boost/archive/binary_iarchive.hpp>
 	<boost/serialization/vector.hpp>
 
 1444799276 /home/tim/programs/codeblocks_ws/Bank/Bank/StandardUser.h
@@ -73,16 +78,16 @@
 	<cmath>
 	<algorithm>
 
-1444801589 source:/home/tim/programs/codeblocks_ws/Bank/Bank/Manager.cpp
+1444876488 source:/home/tim/programs/codeblocks_ws/Bank/Bank/Manager.cpp
 	"Manager.h"
 
-1444801702 source:/home/tim/programs/codeblocks_ws/Bank/Bank/StandardUser.cpp
+1444876568 source:/home/tim/programs/codeblocks_ws/Bank/Bank/StandardUser.cpp
 	"StandardUser.h"
 
-1444801563 source:/home/tim/programs/codeblocks_ws/Bank/Bank/User.cpp
+1444876794 source:/home/tim/programs/codeblocks_ws/Bank/Bank/User.cpp
 	"User.h"
 
-1444801428 source:/home/tim/programs/codeblocks_ws/Bank/Bank/UserList.cpp
+1444874077 source:/home/tim/programs/codeblocks_ws/Bank/Bank/UserList.cpp
 	"UserList.h"
 
 1444848652 source:/home/tim/programs/c_cpp/3307_bank_cb/3307_bank/Admin.cpp
